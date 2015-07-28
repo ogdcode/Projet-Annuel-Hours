@@ -2,9 +2,11 @@
 	class Database{
 		public $connect, $query;
 		private $DB_host, $DB_user, $DB_pass, $DB_name;
+		public $DB_prefix;
 		
 		public function __construct($_config)
 		{
+			$this->DB_prefix 	= $_config['DB_prefix'];
 			$this->DB_host 	= $_config['DB_host'];
 			$this->DB_user 	= $_config['DB_user'];
 			$this->DB_pass 	= $_config['DB_pass'];
@@ -53,7 +55,7 @@
 		// Select Query
 		public function select($table, $fields = '*', $where = '', $orderby = '', $limit = '')
 		{
-			$query = "SELECT ".trim($fields)." FROM `".trim($table)."`";
+		$query = "SELECT ".trim($fields)." FROM `".$this->DB_prefix."".trim($table)."`";
 			if($where != '')
 			{
 				$query .= " WHERE ".trim($where);
@@ -97,7 +99,7 @@
 		}
 		public function delete($table, $where)
 		{
-			$delete = $this->query("DELETE FROM ".$table." WHERE ".$where."");
+		$delete = $this->query("DELETE FROM ".$this->DB_prefix."".$table." WHERE ".$where."");
 			return $delete;
 		}
 		
@@ -115,7 +117,7 @@
 			{
 				$fields = "`".implode("`,`", array_keys($data))."`";
 				$values = implode("','",$data);
-				$query = "INSERT INTO `".$table."` (".$fields.") VALUES ('".$values."')";
+			$query = "INSERT INTO `".$this->DB_prefix.$table."` (".$fields.") VALUES ('".$values."')";
 				return $this->query($query);
 			}else{
 				die($data.' is not an array');
@@ -125,7 +127,7 @@
 		// Update Functions
 		public function update($table,$fields,$where)
 		{
-			return $this->query("UPDATE `".$table."` SET ".$fields." WHERE ".$where."");
+        return $this->query("UPDATE `".$this->DB_prefix.$table."` SET ".$fields." WHERE ".$where."");
 		}
 		
 		// ID Functions
